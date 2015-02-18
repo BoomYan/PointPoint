@@ -1,6 +1,4 @@
-
 <!doctype html>
-
 <html lang="en">
 
 <head>
@@ -17,19 +15,8 @@
 
 <!-- <script src="../Modernizr/modernizr-2.0.6.js"></script> -->
 
-
-</head>
-<body>
-<canvas id="canvasOne" width="800px" height="600px">
-</canvas>
-<button id="lastLevel">Last Level</button>
-<button id="nextLevel">Next Level</button>
-<a id="blood" color="red"></a>
-</body>
-
-
-<script src      = "js/vendor/SimpleDiskParticle.js"></script>
-<script src      = "js/vendor/SimpleSquareParticle.js"></script>
+<script src = "com/rectangleworld/display/SimpleDiskParticle.js"></script>
+<script src = "com/rectangleworld/display/SimpleSquareParticle.js"></script>
 
 <script type="text/javascript">
 
@@ -37,8 +24,7 @@
 //The basic setup here, including the debugging code and window load listener, is copied from 'HTML5 Canvas' by Fulton & Fulton.
 //Checking for browser compatibility is accomplished with the Modernizr JavaScript library.
 //The latest version of the library is available at www.modernizr.com.
-var level = 1;
-var blood = 100;
+
 window.addEventListener("load", windowLoadHandler, false);
 
 //For debug messages
@@ -82,10 +68,9 @@ function canvasApp() {
 	var targetX;
 	var targetY;
 	var easeAmount;
-
 	
 	function init() {
-		numShapes = 3;
+		numShapes = 2;
 		easeAmount = 0.45;
 		
 		shapes = [];
@@ -95,8 +80,6 @@ function canvasApp() {
 		drawScreen();
 		
 		theCanvas.addEventListener("mousedown", mouseDownListener, false);
-
-
 	}
 	
 	function makeShapes() {
@@ -109,31 +92,31 @@ function canvasApp() {
 		var tempB;
 		var tempA;
 		var tempColor;
-		for (i=0; i < numShapes-1; i++) {
+		for (i=0; i < numShapes; i++) {
+			tempRad = 5 + Math.floor(Math.random()*20);
+			tempX = Math.random()*(theCanvas.width - tempRad);
+			tempY = Math.random()*(theCanvas.height - tempRad);
+			
 			//we set a randomized color, including a random alpha (transparency) value.
 			//The color is set using the rgba() method.
-
-			tempColor = "rgba(" + 0 + "," + 0 + "," + 0 + "," + 0.8 + ")";
+			tempR = Math.floor(Math.random()*255);
+			tempG = Math.floor(Math.random()*255);
+			tempB = Math.floor(Math.random()*255);
+			tempA = 0.3 + 0.5*Math.random();
+			tempColor = "rgba(" + tempR + "," + tempG + "," + tempB + "," + tempA + ")";
 			
 			//randomly select either a circle or a square
-			if (i==0) {
-				tempShape = new SimpleDiskParticle(0.1*theCanvas.width, 0.1*theCanvas.height);
-				tempRad = 15;
+			if (Math.random() < 0.5) {
+				tempShape = new SimpleDiskParticle(tempX, tempY);
 			}
 			else {
-				tempShape = new SimpleDiskParticle(0.1*theCanvas.width, 0.8*theCanvas.height);
-				tempRad = 20;
+				tempShape = new SimpleSquareParticle(tempX, tempY);
 			}
 			
 			tempShape.color = tempColor;
 			tempShape.radius = tempRad;
 			shapes.push(tempShape);
 		}
-
-		tempShape = new SimpleDiskParticle((shapes[0].x+shapes[1].x)/2, (shapes[0].y+shapes[1].y)/2);		
-		tempShape.color = tempColor;
-		tempShape.radius = tempRad;
-		shapes.push(tempShape);		
 	}
 	
 	function mouseDownListener(evt) {
@@ -174,14 +157,10 @@ function canvasApp() {
 			
 			//start timer
 			timer = setInterval(onTimerTick, 1000/30);
-
-			shapes[numShapes-1]
 		}
 		theCanvas.removeEventListener("mousedown", mouseDownListener, false);
 		window.addEventListener("mouseup", mouseUpListener, false);
 		
-
-
 		//code below prevents the mouse down from having an effect on the main browser window:
 		if (evt.preventDefault) {
 			evt.preventDefault();
@@ -238,12 +217,10 @@ function canvasApp() {
 		
 		targetX = posX;
 		targetY = posY;
-
 	}
 		
 	function drawShapes() {
 		var i;
-
 		for (i=0; i < numShapes; i++) {
 			//the drawing of the shape is handled by a function inside the external class.
 			//we must pass as an argument the context to which we are drawing the shape.
@@ -251,81 +228,22 @@ function canvasApp() {
 		}
 	}
 	
-	function drawLines(){
-		console.log(level);
-		if (level == 1){
-      		context.beginPath();
-      		context.moveTo(50, 350);
-      		context.lineTo(800, 350);
-      		context.stroke();
-
-      		context.beginPath();
-      		context.moveTo(50, 400);
-      		context.lineTo(800, 400);
-      		context.stroke();
-
-      		if (shapes[0].y-15<350 || shapes[0].y+15>400){
-      			blood=blood-0.5;
-      		}
-  		}
-  		if (level == 2){
-
-context.beginPath();
-context.arc(800,300,50,Math.PI/2,1.5*Math.PI);
-context.stroke();
-context.beginPath();
-context.arc(800,300,100,Math.PI/2,1.5*Math.PI);
-context.stroke();
-  		}
-  		if (level == 3){
-
-      		context.beginPath();
-      		context.moveTo(50, 200);
-      		context.lineTo(800, 200);
-      		context.stroke();
-
-      		context.beginPath();
-      		context.moveTo(50, 250);
-      		context.lineTo(800, 250);
-      		context.stroke();
-
-      		context.beginPath();
-      		context.moveTo(50, 100);
-      		context.lineTo(800, 200);
-      		context.stroke();
-
-      		context.beginPath();
-      		context.moveTo(50, 450);
-      		context.lineTo(800, 250);
-      		context.stroke();
-
-      		if (shapes[0].y-15<200 || shapes[0].y+15>250){
-      			blood=blood-0.5;
-
-      		}
-  		}
-  		document.getElementById('blood').innerHTML=blood;
-	}
-
 	function drawScreen() {
 		//bg
-		context.fillStyle = "#ff0000";
+		context.fillStyle = "#000000";
 		context.fillRect(0,0,theCanvas.width,theCanvas.height);
-		shapes[0].x=(shapes[1].x+shapes[2].x)/2;
-		shapes[0].y=(shapes[1].y+shapes[2].y)/2;	
-		drawShapes();
-		drawLines();
+		
+		drawShapes();		
 	}
-	document.getElementById('nextLevel').onclick=function(){
-		level=level+1;
-		drawScreen();
-	}
-	document.getElementById('lastLevel').onclick=function(){
-		level=level-1;
-		drawScreen();
-	}
+	
 }
 
 </script>
 
+</head>
+<body>
+<canvas id="canvasOne" width="800px" height="600px">
+</canvas>
+
+</body>
 </html>
